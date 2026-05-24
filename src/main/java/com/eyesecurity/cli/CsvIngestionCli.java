@@ -35,11 +35,7 @@ public class CsvIngestionCli {
                 invalidRecord.rawLine()
         ));
 
-        if (options.sourceFilter() != null) {
-            records = records.stream()
-                    .filter(record -> options.sourceFilter().equalsIgnoreCase(record.source()))
-                    .toList();
-        }
+        records = options.filters().apply(records);
 
         HttpResponse<String> response = postToApi(options.apiUrl(), new IngestionRequest(records));
         System.out.printf("Sent %d records to %s%n", records.size(), options.apiUrl());
@@ -56,25 +52,31 @@ public class CsvIngestionCli {
         return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    private record CliOptions(Path csvPath, String apiUrl, String sourceFilter) {
+    private record CliOptions(Path csvPath, String apiUrl, RecordFilters filters) {
         private static CliOptions parse(String[] args) {
             Path csvPath = null;
             String apiUrl = "http://localhost:8080/api/ingest";
             String sourceFilter = null;
+            String categoryFilter = null;
+            String assetNameFilter = null;
 
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
                     case "--csv" -> csvPath = Path.of(requireValue(args, ++i, "--csv"));
                     case "--api-url" -> apiUrl = requireValue(args, ++i, "--api-url");
                     case "--source" -> sourceFilter = requireValue(args, ++i, "--source");
+                    case "--category" -> categoryFilter = requireValue(args, ++i, "--category");
+                    case "--asset-name" -> assetNameFilter = requireValue(args, ++i, "--asset-name");
                     default -> throw new IllegalArgumentException("Unknown argument: " + args[i]);
                 }
             }
 
             if (csvPath == null) {
-                throw new IllegalArgumentException("Usage: --csv <path> [--api-url <url>] [--source <source>]");
+                throw new IllegalArgumentException(
+                        "Usage: --csv <path> [--api-url <url>] [--source <source>] "
+                                + "[--category <category>] [--asset-name <assetName>]");
             }
-            return new CliOptions(csvPath, apiUrl, sourceFilter);
+            return new CliOptions(csvPath, apiUrl, RecordFilters.from(sourceFilter, categoryFilter, assetNameFilter));
         }
 
         private static String requireValue(String[] args, int index, String option) {

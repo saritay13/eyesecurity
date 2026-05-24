@@ -7,7 +7,7 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 @Component
-public class ExternalAnalyticsClient {
+public class ExternalAnalyticsClient implements AnalyticsClient {
     private static final String AUTH_HEADER = "eye-am-hiring";
 
     private final RestClient restClient;
@@ -16,6 +16,7 @@ public class ExternalAnalyticsClient {
         this.restClient = builder.baseUrl("https://api.heyering.com").build();
     }
 
+    @Override
     public void submit(List<AnalyticsEvent> events) {
         restClient.post()
                 .uri("/analytics")

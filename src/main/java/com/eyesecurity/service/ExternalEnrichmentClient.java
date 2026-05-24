@@ -8,7 +8,7 @@ import org.springframework.web.client.RestClient;
 import java.util.Map;
 
 @Component
-public class ExternalEnrichmentClient {
+public class ExternalEnrichmentClient implements EnrichmentClient {
     private static final String AUTH_HEADER = "eye-am-hiring";
 
     private final RestClient restClient;
@@ -17,6 +17,7 @@ public class ExternalEnrichmentClient {
         this.restClient = builder.baseUrl("https://api.heyering.com").build();
     }
 
+    @Override
     public EnrichmentResponse enrich(SecurityLogRecord record) {
         Map<String, Object> request = Map.of(
                 "id", record.id(),
