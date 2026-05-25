@@ -6,6 +6,7 @@ import com.eyesecurity.common.IngestionResponse;
 import com.eyesecurity.common.SecurityLogRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class IngestionService {
     private final long analyticsRetryDelayMillis;
     private final long analyticsRateLimitDelayMillis;
 
+    @Autowired
     public IngestionService(EnrichmentClient enrichmentClient, AnalyticsClient analyticsClient) {
         this(enrichmentClient,
                 analyticsClient,
