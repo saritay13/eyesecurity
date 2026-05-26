@@ -47,6 +47,8 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9081
 
 The CLI reads a CSV file, validates and normalizes rows, applies optional filters, and posts valid records to the API.
 
+Assumption: the current CLI is designed for small amounts of data. Larger datasets require a redesign
+
 Run with the included CSV:
 
 ```bash
@@ -101,11 +103,10 @@ mvn exec:java -Dexec.mainClass=com.eyesecurity.cli.CsvIngestionCli -Dexec.args="
    - `asset-name`
 5. The CLI sends only valid, filtered records to `/api/ingest`.
 6. The API enriches records in batches of 20.
-7. Enrichment inside each batch runs concurrently using Java virtual threads.
-8. Enrichment failures are retried and then counted without failing the whole request.
-9. Successfully enriched records are submitted to analytics in batches.
-10. Analytics calls respect the external limit of 1 request per 10 seconds.
-11. Analytics failures are retried with exponential backoff and counted if retries are exhausted.
+7. Enrichment failures are retried and then counted without failing the whole request.
+8. Successfully enriched records are submitted to analytics in batches.
+9. Analytics calls respect the external limit of 1 request per 10 seconds.
+10. Analytics failures are retried with exponential backoff and counted if retries are exhausted.
 
 ## API Response
 
