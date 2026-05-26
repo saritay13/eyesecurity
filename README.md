@@ -47,7 +47,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9081
 
 The CLI reads a CSV file, validates and normalizes rows, applies optional filters, and posts valid records to the API.
 
-Assumption: the current CLI is designed for small amounts of data. Larger datasets require a redesign
+**Assumption:** the current CLI is designed for small amounts of data. Larger datasets require a redesign
 
 Run with the included CSV:
 
